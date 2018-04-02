@@ -1,0 +1,115 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "msbot" do |host|
+    host.vm.box = "bento/centos-7.2"
+    host.vm.network "private_network", ip: "192.168.20.10"
+    host.vm.network "forwarded_port", guest: 9000, host: 9000
+    host.vm.hostname = "msbot"
+    host.vm.provider :virtualbox do |vb|
+      # Visual Basic GUI (NOT used to configure guest's Xwindows setup)
+      #vb.gui = true
+      # Define basics
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", 256]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["modifyvm", :id, "--draganddrop", "hosttoguest"]
+      # For better DNS resolution
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      # No audio
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      # For performance
+      vb.customize ["modifyvm", :id, "--usb", "off"]
+      # Huge performance gain here
+      vb.linked_clone = true if Vagrant::VERSION >= '1.8.0'
+    end
+
+    ## SHELL PROVISIONING
+    host.vm.provision "shell", run: "always", inline: <<-SHELL
+      ## MAKE FILES VISIBLE AND RELOCATE TO SHARE DIRECTORY (FROM /home/vagrant)
+      #sudo mount -t vboxsf vagrant /vagrant
+      sudo mkdir /opt/echoLUISbot
+      cd /opt/echoLUISbot
+      sudo cp /vagrant/echoLUISbot.py .
+      cd ~
+
+      ## INSTALL REPOSITORY PACKAGES
+      sudo yum -y install epel-release
+      sudo yum -y install yum-utils
+
+      ## INSTALL PYTHON FOR THE SCRIPT, NODE FOR THE EMULATOR, AND GIT FOR GRABBING LATEST VERSIONS
+      sudo yum install -y python36
+      sudo yum install -y nodejs
+      sleep 15
+
+      ## INSTALL PYTHON'S PIP AND PYTHON MODULES WITH PIP
+      sudo python3.6 -m ensurepip --default-pip
+      sudo python3.6 -m pip install --upgrade pip
+      sudo pip install urllib3
+      sudo pip install botbuilder.core
+      sudo pip install botbuilder.schema
+      sudo pip install botframework.connector
+      
+      ## INSTALL LUIS PROJECT
+      sudo yum install -y git
+      cd ~
+      git clone https://github.com/Microsoft/Cognitive-LUIS-Python
+      cd ~/Cognitive-LUIS-Python
+      sudo python3.6 setup.py install
+      
+      ## INSTALL MICROSOFT BOT FRAMEWORK
+      cd /opt
+      sudo git clone https://github.com/Microsoft/BotFramework-Emulator.git
+      sleep 15
+      cd /opt/BotFramework-Emulator
+      sudo npm install
+      sudo npm run build
+      
+      ## INSTALL X-WINDOWS (NEEDED FOR THE EMULATOR)
+      cd ~
+      sudo yum -y groupinstall "X Window System"
+      sudo yum -y install gnome-classic-session gnome-terminal nautilus-open-terminal control-center liberation-mono-fonts
+      ## REQUIRED PACKAGES BY EMULATOR:
+      sudo yum -y install libXss.so.1 
+      sudo yum -y install libXScrnSaver-1.2.2-6.1.el7.x86_64
+
+      ## MANUALY SWITCH TO GUI
+      sudo unlink /etc/systemd/system/default.target
+      sudo ln -sf /lib/systemd/system/graphical.target /etc/systemd/system/default.target
+
+      ## FINAL UPDATE AND SOFTWARE CLEANUP
+      #sudo yum -y update
+      #sudo yum -y clean all
+      #rm -rf /var/cache/yum
+      #sleep 30
+
+      ## DIRECT THE USER ON HOW TO RUN A TEST OF ECHO-LUIS-BOT
+      echo "
+                           READY TO TEST: echo-LUIS-bot
+
+            Directions:
+            1. Open the VMware/VirtualBox GUI and peform the following:
+                a. Wait till the "msbot" system shows Powered Off
+                b. Start the System NORMALLY to gain GUI access to the system
+                c. Click on Licensing and accept the license to continue
+                d. Click on the Vagrant user and enter the password: vagrant
+            2. Open the first Terminal Window and enter the commands:
+                a. sudo /opt/echoLUISbot
+                b. sudo python3.6 echo-LUIS-bot.py
+            3. Open a second Terminal window and enter the command:
+                a. cd /opt/BotFramework-Emulator
+                b. sudo npm run start
+            4. In the MS Bot Emulator:
+                a. Enter the endpoint as:
+                  http://localhost:9000/api/message and click connect
+                b. Enter the default APP ID (HINT: cut and paste from the prompt)
+                c. Enter the default APP KEY (HINT: cut and paste from the prompt)
+                d. Enter text for LUIS to render.  For example the text:
+                  Start a run
+                e. Examine the LUIS returned text
+            
+      "
+      shutdown
+      exit 0
+SHELL
+  end
+end
