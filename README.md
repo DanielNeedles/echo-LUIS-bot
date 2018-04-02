@@ -13,6 +13,7 @@ For more information see the README.md in https://github.com/Microsoft/botbuilde
 Installation
 --------------
 This example program has been tested on Windows 10 with Python 3.6 and RedHat CentOS 7.2 with Python 3.6.
+Simply copy echo-LUIS-bot to the desired destination.
 
 Usage
 --------------
@@ -20,7 +21,8 @@ This example program has been tested on Windows 10 with Python 3.6 and RedHat Ce
 
             Directions:
             1. Open the first Terminal Window and start the bot. For example:
-                python3.6 echo-LUIS-bot.py
+                Linux CentOS: python3.6 echo-LUIS-bot.py
+                Windows 10: py echo-LUIS-bot.py
             2. Open a second Terminal window and run the Emulator.  For example:
                 cd /vagrant/BotFramework-Emulator
                 sudo npm run start
