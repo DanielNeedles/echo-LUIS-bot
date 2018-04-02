@@ -13,7 +13,7 @@ For more information see the README.md in https://github.com/Microsoft/botbuilde
 Installation
 --------------
 This example program has been tested on Windows 10 with Python 3.6 and RedHat CentOS 7.2 with Python 3.6.
-Simply copy echo-LUIS-bot to the desired destination.
+Install the Python modules listed in requirements.txt and then simply copy echo-LUIS-bot to the desired destination. 
 
 Usage
 --------------
@@ -33,7 +33,14 @@ This example program has been tested on Windows 10 with Python 3.6 and RedHat Ce
                 c. Enter the default APP KEY (HINT: cut and paste from the prompt)
                 d. Enter text for LUIS to render.  For example the text:
                   Start a run
-                e. Examine the LUIS returned text
+                e. Examine the LUIS returned text.  From the example above:
+                   LUIS says: --------------------------------------------- LUIS Response:
+                   Query: Start a run
+                   Top Scoring Intent: Fitness.Activity
+                   Entities:
+                   'start': (Type: Fitness.Activity, Score: 0.840186954)
+                   
+                   'run': (Type: Fitness.ActivityType, Score: 0.956281543)
 
 License
 =======
