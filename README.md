@@ -13,7 +13,12 @@ For more information see the README.md in https://github.com/Microsoft/botbuilde
 Installation
 --------------
 This example program has been tested on Windows 10 with Python 3.6 and RedHat CentOS 7.2 with Python 3.6.
-Install the Python modules listed in requirements.txt and then simply copy echo-LUIS-bot to the desired destination. 
+
+WINDOWS
+  Install the Python modules listed in requirements.txt and then simply copy echo-LUIS-bot to the desired destination. 
+
+LINUX (CENTOS 7.2) Vagrant on VirtualBox
+  A Vagrant file is provided under echo-LUIS-bot directory.  Place this file and the echo-LUIS-bot.py file in a directory and execute "vagrant up".  
 
 Usage
 --------------
