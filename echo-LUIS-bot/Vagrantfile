@@ -88,7 +88,7 @@ Vagrant.configure("2") do |config|
 
             Directions:
             1. Open the VMware/VirtualBox GUI and peform the following:
-                a. Wait till the "msbot" system shows Powered Off
+                a. Wait till the 'msbot' system shows Powered Off
                 b. Start the System NORMALLY to gain GUI access to the system
                 c. Click on Licensing and accept the license to continue
                 d. Click on the Vagrant user and enter the password: vagrant
@@ -105,7 +105,7 @@ Vagrant.configure("2") do |config|
                 c. Enter the default APP KEY (HINT: cut and paste from the prompt)
                 d. Enter text for LUIS to render.  For example the text:
                   Start a run
-                e. Examine the LUIS returned text. For example "Start a run" returns:
+                e. Examine the LUIS returned text. For example 'Start a run' returns:
                   LUIS says: --------------------------------------------- LUIS Response:
                   Query: Start a run
                   Top Scoring Intent: Fitness.Activity
